@@ -139,7 +139,7 @@ def project_issues(project_id):
             except ValueError:
                 query=query.filter(False)
     if q:
-        query=query.filter(Issue.title.ilike(f"%{q}%"))
+        query=query.filter(Issue.title.ilike(f"%{q}%")) 
 
     query=query.order_by(Issue.created_at.desc())
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)

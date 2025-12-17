@@ -4,7 +4,7 @@ from flask_login import UserMixin
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from sqlalchemy import DateTime
-
+    
 IST = ZoneInfo("Asia/Kolkata")
 
 def ist_now():
@@ -21,7 +21,6 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"<User {self.username}>"
 
-
 class Project(db.Model):
     __tablename__ = "project"
 
@@ -35,7 +34,6 @@ class Project(db.Model):
 
     def __repr__(self):
         return f"<Project {self.name}>"
-
 
 class Issue(db.Model):
     __tablename__ = "issue"
@@ -62,7 +60,6 @@ class Issue(db.Model):
 
     def __repr__(self):
         return f"<Issue {self.title!r} ({self.status})>"
-
 
 class Comment(db.Model):
     __tablename__ = "comment"
