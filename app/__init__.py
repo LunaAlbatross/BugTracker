@@ -11,7 +11,7 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static')
 
-    app.config['SECRET_KEY'] = 'CHANGE_THIS_LATER'
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///BUGTRACKER.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
