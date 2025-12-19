@@ -1,58 +1,207 @@
-{% extends "base.html" %}
-{% block content %}
-    <h1>{{ issue.title }}</h1>
+/* =================================================================
+   THE ULTRA-CREAMY CAPPUCCINO
+   Focus: Velvety textures, Heavy Cream surfaces, Mocha accents
+   ================================================================= */
+
+:root {
+    /* The Palette - Extra Creamy */
+    --heavy-cream: #fdfaf5;      /* The base "froth" white */
+    --steamed-milk: #f5efe6;     /* Soft secondary cream */
+    --warm-latte: #e6d5c3;       /* Deeper cream for borders */
+    --smooth-mocha: #594a42;     /* Rich coffee brown for text */
+    --espresso-shot: #3d3028;    /* Darkest accent for buttons */
     
-    <p><strong>Status: {{ issue.status }} | Priority: {{ issue.priority }}</strong></p>
-    
-    <p>{{ issue.description or "No description" }}</p>
-    
-    <p>
-        <strong>Reporter:</strong> {{ issue.reporter.username }} | 
-        <strong>Assignee:</strong> {{ issue.assignee.username if issue.assignee else "Not assigned yet" }}
-    </p>
+    /* Soft Matte "Flavors" for Badges */
+    --pistachio: #9fb8ad;        /* Muted green */
+    --rose-foam: #c9a9a6;        /* Muted pink-red */
+    --honey: #d9ae82;            /* Muted amber */
 
-    <h3>Comments</h3>
-    {% if issue.comments %}
-        <ul>
-            {% for comment in issue.comments %}
-                <li>
-                    <strong>{{ comment.user.username }}</strong> - {{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}
-                    <br>{{ comment.content }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No comments yet.</p>
-    {% endif %}
+    /* UI Settings */
+    --text-main: var(--smooth-mocha);
+    --border-soft: var(--warm-latte);
+    --radius-curvy: 16px;        /* Rounder edges feel "softer" */
+    --shadow-velvet: 0 10px 40px rgba(89, 74, 66, 0.05);
+}
 
-    <h3>Activity</h3>
-    {% if issue.activities %}
-        <ul>
-            {% for a in issue.activities %}
-                <li>
-                    <small>{{ a.created_at.strftime('%Y-%m-%d %H:%M') if a.created_at else "" }}</small>
-                    <strong>{{ a.action }}</strong>
-                    {% if a.user %} by {{ a.user.username }}{% endif %}:
-                    {% if a.detail %} {{ a.detail }} {% else %}<em>No details</em>{% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No activity yet.</p>
-    {% endif %}
+/* =================================================================
+   BASE STYLES
+   ================================================================= */
 
-    <h4>Add Comment</h4>
-    <form method="POST" action="{{ url_for('main.issue_detail', issue_id=issue.id) }}">
-        <textarea name="content" rows="4" placeholder="Write your comment..." required></textarea>
-        <button type="submit">Add Comment</button>
-    </form>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    {% if current_user.is_authenticated and
-        (current_user.id == issue.reporter_id or 
-         (issue.assignee_id and current_user.id == issue.assignee_id) or 
-         current_user.id == issue.project.owner_id) %}
-        <p><a href="{{ url_for('main.issue_edit', issue_id=issue.id) }}">Edit Issue</a></p>
-    {% endif %}
+body {
+    font-family: 'Quicksand', 'Segoe UI', sans-serif; /* A rounded font works best here */
+    background-color: var(--steamed-milk);
+    color: var(--text-main);
+    line-height: 1.7;
+    padding: 40px 20px;
+}
 
-    <p><a href="{{ url_for('main.project_issues', project_id=issue.project.id) }}">Back to issues</a></p>
-{% endblock %}
+body > * {
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+/* =================================================================
+   TYPOGRAPHY
+   ================================================================= */
+
+h1, h2, h3 {
+    color: var(--espresso-shot);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+h1 { 
+    font-size: 2.6rem; 
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+a {
+    color: var(--smooth-mocha);
+    text-decoration: underline;
+    text-decoration-color: var(--warm-latte);
+    text-underline-offset: 4px;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--espresso-shot);
+    text-decoration-color: var(--espresso-shot);
+}
+
+/* =================================================================
+   VELVETY CONTAINERS (Forms & Lists)
+   ================================================================= */
+
+form, ul {
+    background: var(--heavy-cream);
+    border: 2px solid white; /* Subtle "inner glow" effect */
+    border-radius: var(--radius-curvy);
+    padding: 35px;
+    box-shadow: var(--shadow-velvet), inset 0 0 0 1px var(--warm-latte);
+    margin-bottom: 30px;
+    list-style: none;
+}
+
+/* Inputs feel like "carved" cream */
+input, textarea, select {
+    width: 100%;
+    background: var(--steamed-milk);
+    border: 1px solid var(--warm-latte);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+    margin-bottom: 20px;
+}
+
+input:focus {
+    outline: none;
+    background: white;
+    border-color: var(--honey);
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    color: var(--smooth-mocha);
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+/* =================================================================
+   BUTTONS (The Espresso Kick)
+   ================================================================= */
+
+button, button[type="submit"] {
+    background: var(--espresso-shot);
+    color: var(--heavy-cream);
+    border: none;
+    padding: 14px 32px;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(61, 48, 40, 0.2);
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: var(--smooth-mocha);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(61, 48, 40, 0.3);
+}
+
+/* Navigation links that look like soft buttons */
+p a {
+    display: inline-block;
+    padding: 10px 24px;
+    background: white;
+    border: 1px solid var(--warm-latte);
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    color: var(--smooth-mocha);
+}
+
+/* =================================================================
+   MATTE BADGES
+   ================================================================= */
+
+.badge {
+    padding: 5px 14px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    display: inline-block;
+}
+
+.badge-open { background: var(--pistachio); color: white; }
+.badge-closed { background: var(--warm-latte); color: var(--smooth-mocha); }
+.badge-high { background: var(--rose-foam); color: white; }
+.badge-medium { background: var(--honey); color: white; }
+
+/* =================================================================
+   LISTS & ACTIVITY HOVER
+   ================================================================= */
+
+ul li {
+    padding: 24px;
+    border-bottom: 1px solid var(--steamed-milk);
+    transition: transform 0.2s ease;
+}
+
+ul li:hover {
+    transform: scale(1.01);
+    background: white;
+    border-radius: 8px;
+}
+
+ul li:last-child { border-bottom: none; }
+
+ul li strong {
+    font-size: 1.3rem;
+    color: var(--espresso-shot);
+}
+
+/* =================================================================
+   FLASH MESSAGES
+   ================================================================= */
+
+.flash p {
+    background: white;
+    border: 1px solid var(--warm-latte);
+    border-left: 5px solid var(--pistachio);
+    color: var(--smooth-mocha);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-velvet);
+}

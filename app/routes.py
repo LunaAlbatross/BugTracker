@@ -119,7 +119,8 @@ def project_create():
         db.session.commit()
 
         flash("Project created successfully.", "success")
-        return redirect(url_for("main.projects_list"))
+        return redirect(url_for("main.my_projects"))
+
 
     return render_template("projects/new.html")
 
