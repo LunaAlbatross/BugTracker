@@ -3,12 +3,14 @@
   <h1>Issues for {{ project.name }}</h1>
 
   <p>
-    <a href="{{ url_for('main.issue_create', project_id=project.id) }}">+ New Issue</a> |
-    <a href="{{ url_for('main.projects_list') }}">Back to projects</a>
+    <a href="{{ url_for('main.issue_create', project_id=project.id) }}">+ New Issue</a>
+    <a href="{{ url_for('main.my_projects') }}">Back to My Projects</a>
+
   </p>
 
   <form method="GET" action="{{ url_for('main.project_issues', project_id=project.id) }}">
     <input type="text" name="q" placeholder="Search title..." value="{{ current_filters.q or '' }}">
+    
     <select name="status">
       <option value="">-- Any status --</option>
       {% for s in statuses %}
@@ -27,7 +29,9 @@
       <option value="">-- Any assignee --</option>
       <option value="unassigned" {% if current_filters.assignee == 'unassigned' %}selected{% endif %}>Unassigned</option>
       {% for u in users %}
-        <option value="{{ u.id }}" {% if current_filters.assignee and current_filters.assignee|int == u.id %}selected{% endif %}>{{ u.username }}</option>
+        <option value="{{ u.id }}" {% if current_filters.assignee and current_filters.assignee|int == u.id %}selected{% endif %}>
+          {{ u.username }}
+        </option>
       {% endfor %}
     </select>
 
@@ -48,10 +52,18 @@
           <br>
           Reporter: {{ issue.reporter.username }} |
           Assignee: {{ issue.assignee.username if issue.assignee else "Unassigned" }} |
-          Created: {{ issue.created_at }}
+          Created: {{ issue.created_at.strftime('%Y-%m-%d %H:%M') }}
         </li>
       {% endfor %}
     </ul>
+
+    {% if project.owner_id == current_user.id %}
+      <h4>Add Member</h4>
+      <form method="POST" action="{{ url_for('main.add_project_member', project_id=project.id) }}">
+        <input type="text" name="username" placeholder="Username" required>
+        <button type="submit">Add</button>
+      </form>
+    {% endif %}
 
     <div>
       {% if pagination.has_prev %}

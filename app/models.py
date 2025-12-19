@@ -38,25 +38,25 @@ class Project(db.Model):
 class Issue(db.Model):
     __tablename__ = "issue"
 
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.Text, nullable=True)
+    id = db.Column(db.Integer, primary_key=True, index=True)
+    title = db.Column(db.String(200), nullable=False, index=True)
+    description = db.Column(db.Text, nullable=True, index=True)
 
-    status = db.Column(db.String(30), default="Open", nullable=False)
-    priority = db.Column(db.String(20), default="Medium", nullable=False)
+    status = db.Column(db.String(30), default="Open", nullable=False, index=True)
+    priority = db.Column(db.String(20), default="Medium", nullable=False, index=True)
 
-    project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False, index=True)
     project = db.relationship("Project", backref=db.backref("issues", lazy="dynamic"))
 
-    reporter_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    reporter_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
     reporter = db.relationship("User", foreign_keys=[reporter_id])
 
-    assignee_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    assignee_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True, index=True)
     assignee = db.relationship("User", foreign_keys=[assignee_id])
 
-    created_at = db.Column(DateTime(timezone=True), default=ist_now)
-    updated_at = db.Column(DateTime(timezone=True), default=ist_now, onupdate=ist_now)
-    due_date = db.Column(DateTime(timezone=True), nullable=True)
+    created_at = db.Column(DateTime(timezone=True), default=ist_now, index=True)
+    updated_at = db.Column(DateTime(timezone=True), default=ist_now, onupdate=ist_now, index=True)
+    due_date = db.Column(DateTime(timezone=True), nullable=True, index=True)
 
     def __repr__(self):
         return f"<Issue {self.title!r} ({self.status})>"
@@ -101,3 +101,16 @@ class Activity(db.Model):
     def __repr__(self):
         return f"Activity {self.action} by {self.user.id} on issue {self.issue.id}"
     
+class ProjectMember(db.Model):
+    __tablename__="project_member"
+
+    id=db.Column(db.Integer, primary_key=True)
+    project_id=db.Column(db.Integer,db.ForeignKey("project.id"), nullable=False)
+    user_id=db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
+    role=db.Column(db.String(20),default='member')
+
+    project=db.relationship("Project", backref=db.backref("members", cascade="all, delete-orphan"))
+    user=db.relationship("User")
+
+    __table_args__=(db.UniqueConstraint("project_id", "user_id", name="uq_project_user"),)
+

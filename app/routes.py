@@ -4,10 +4,19 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
-from .models import User, Project, Issue, Comment, Activity
+from .models import User, Project, Issue, Comment, Activity, ProjectMember
 from . import db
 
 main = Blueprint("main", __name__)
+
+def user_can_access_project(user, project):
+    if project.owner_id == user.id:
+        return True
+
+    return ProjectMember.query.filter_by(
+        project_id=project.id,
+        user_id=user.id
+    ).first() is not None
 
 
 @main.route("/")
@@ -76,15 +85,14 @@ def logout():
 @main.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html", user=current_user)
-
-
-@main.route("/projects")
-@login_required
-def projects_list():
-    projects = Project.query.order_by(Project.created_at.desc()).all()
-    return render_template("projects/list.html", projects=projects)
-
+    projects = (
+        Project.query
+        .join(ProjectMember)
+        .filter(ProjectMember.user_id == current_user.id)
+        .order_by(Project.created_at.desc())
+        .all()
+    )
+    return render_template("dashboard.html", projects=projects)
 
 @main.route("/projects/new", methods=["GET", "POST"])
 @login_required
@@ -104,6 +112,10 @@ def project_create():
 
         project = Project(name=name, description=description, owner=current_user)
         db.session.add(project)
+        db.session.flush()
+
+        member=ProjectMember(project_id=project.id, user_id=current_user.id, role="owner")
+        db.session.add(member)
         db.session.commit()
 
         flash("Project created successfully.", "success")
@@ -116,6 +128,10 @@ def project_create():
 @login_required
 def project_issues(project_id):
     project = Project.query.get_or_404(project_id)
+
+    if not user_can_access_project(current_user, project):
+        flash("You do not have access to this project.", "error")
+        return redirect(url_for("main.dashboard"))
 
     status = request.args.get("status",type=str)
     priority = request.args.get("priority",type=str)
@@ -166,6 +182,10 @@ def project_issues(project_id):
 @login_required
 def issue_create(project_id):
     project = Project.query.get_or_404(project_id)
+
+    if not user_can_access_project(current_user, project):
+        flash("You do not have access to this project.", "error")
+        return redirect(url_for("main.projects_list"))
 
     if request.method == "POST":
         title = request.form.get("title")
@@ -237,7 +257,12 @@ def issue_edit(issue_id):
     issue=Issue.query.get_or_404(issue_id)
     project=issue.project
 
-    allowed=( current_user.id == issue.reporter_id or current_user.id == project.owner_id or (issue.assignee_id is not None and current_user.id==issue).assignee_id)
+    allowed = (
+    current_user.id == issue.reporter_id or
+    current_user.id == project.owner_id or
+    (issue.assignee_id is not None and current_user.id == issue.assignee_id)
+    )
+
 
     if not allowed:
         flash("You are not authorized to edit this issue.","error")
@@ -313,14 +338,14 @@ def issue_edit(issue_id):
 
         db.session.add(issue)
 
-        detail_text = "; ".join(changes) if changes else "No changes made."
-        activity = Activity(
-            issue_id=issue.id,
-            user_id=current_user.id,
-            action="Updated",
-            detail=detail_text
-        )
-        db.session.add(activity)
+        if changes:
+            activity = Activity(
+                issue_id=issue.id,
+                user_id=current_user.id,
+                action="Updated",
+                detail="; ".join(changes)
+            )
+            db.session.add(activity)
         db.session.commit()
 
         flash("Issue updated.", "success")
@@ -339,5 +364,55 @@ def issue_edit(issue_id):
                            statuses=statuses,
                            priorities=priorities
                         )
+
+@main.route("/projects/<int:project_id>/members/add", methods=["POST","GET"])
+@login_required
+def add_project_member(project_id):
+    project=Project.query.get_or_404(project_id)
+
+    if project.owner_id != current_user.id:
+        flash("Only the project owner can add members","error")
+        return redirect(url_for("main.project_issues",project_id=project.id))
+    
+    username=request.form.get("username")
+    if not username:
+        flash("Username is required","error")
+        return redirect(url_for("main.project_issues",project_id=project.id))
+    
+    user=User.query.filter_by(username=username).first()
+    if not user:
+        flash("User not found","error")
+        return redirect(url_for("main.project_issues", project_id=project.id))
+    
+    existing=ProjectMember.query.filter_by(project_id=project.id, user_id=user.id).first()
+
+    if existing:
+        flash("User is already a member.", "warning")
+        return redirect(url_for("main.project_issues", project_id=project.id))
+    
+    member=ProjectMember(project_id=project.id,
+                        user_id=user.id,
+                        role="member")
+
+    db.session.add(member)
+    db.session.commit()
+
+    flash(f"{user.username} added to the project","success")
+    return redirect(url_for("main.project_issues", project_id=project.id))
+    
+@main.route("/my-projects")
+@login_required
+def my_projects():
+    projects = (
+        Project.query
+        .join(ProjectMember)
+        .filter(ProjectMember.user_id == current_user.id)
+        .order_by(Project.created_at.desc())
+        .all()
+    )
+
+    return render_template("projects/my_projects.html", projects=projects)
+
+
 
 

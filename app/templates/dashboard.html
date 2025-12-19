@@ -1,11 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Dashboard</h1>
-    <p>Welcome {{ user.username}} </p>
+    <h1>Welcome {{ current_user.username }}</h1>
 
-    <p><a href="{{ url_for('main.projects_list')}}">View Projects</a></p>
-    <p><a href="{{ url_for('main.project_create') }}">Create Project</a></p>
-    <p><a href="{{ url_for('main.logout')}}">Logout</a></p>
+    <p>
+        <a href="{{ url_for('main.project_create') }}">Create New Project</a>
+        <a href="{{ url_for('main.logout') }}">Logout</a>
+    </p>
 
+    <h2>My Projects</h2>
 
+    {% if projects %}
+      <ul>
+        {% for project in projects %}
+          <li>
+            <a href="{{ url_for('main.project_issues', project_id=project.id) }}">
+              <strong>{{ project.name }}</strong>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>You are not part of any projects yet.</p>
+    {% endif %}
 {% endblock %}

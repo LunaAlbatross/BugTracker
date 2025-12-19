@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>My Projects</h1>
+
+  <p>
+    <a href="{{ url_for('main.project_create') }}">+ New Project</a> 
+  </p>
+
+  {% if projects %}
+    <ul>
+      {% for project in projects %}
+        <li>
+          <a href="{{ url_for('main.project_issues', project_id=project.id) }}">
+            <strong>{{ project.name }}</strong>
+          </a>
+          <br>
+          {{ project.description or "No description" }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You are not a member of any projects yet.</p>
+  {% endif %}
+{% endblock %}

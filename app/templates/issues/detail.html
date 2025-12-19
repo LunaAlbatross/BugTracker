@@ -1,51 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
-        <h1>{{ issue.title }}</h1><br
-        <p><strong>Status:{{issue.status}} | Priority: {{issue.priority}}</strong></p><br>
-        <p>{{ issue.description or "No description" }}</p><br>
-        <p>Reporter: {{ issue.reporter.username }} | Assignee: {{ issue.assignee.username if assignee else "Not Assigned yet"}}</p>
+    <h1>{{ issue.title }}</h1>
+    
+    <p><strong>Status: {{ issue.status }} | Priority: {{ issue.priority }}</strong></p>
+    
+    <p>{{ issue.description or "No description" }}</p>
+    
+    <p>
+        <strong>Reporter:</strong> {{ issue.reporter.username }} | 
+        <strong>Assignee:</strong> {{ issue.assignee.username if issue.assignee else "Not assigned yet" }}
+    </p>
 
-        <h3>Comments</h3>
-        {% if issue.comments %}
-            <ul>
-                {% for comment in issue.comments %}
-                    <li>
-                        <strong>{{ comment.username }}</strong>{{ comment.created_at }}: {{ comment.content }}
-                    </li>
-                    {% endfor %}
-            </ul>
-        {% else %}
-            <p>No comments yet.</p>
-        {% endif %}
+    <h3>Comments</h3>
+    {% if issue.comments %}
+        <ul>
+            {% for comment in issue.comments %}
+                <li>
+                    <strong>{{ comment.user.username }}</strong> - {{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}
+                    <br>{{ comment.content }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No comments yet.</p>
+    {% endif %}
 
+    <h3>Activity</h3>
+    {% if issue.activities %}
+        <ul>
+            {% for a in issue.activities %}
+                <li>
+                    <small>{{ a.created_at.strftime('%Y-%m-%d %H:%M') if a.created_at else "" }}</small>
+                    <strong>{{ a.action }}</strong>
+                    {% if a.user %} by {{ a.user.username }}{% endif %}:
+                    {% if a.detail %} {{ a.detail }} {% else %}<em>No details</em>{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No activity yet.</p>
+    {% endif %}
 
-        <h3>Activity</h3>
-            {% if issue.activities %}
-                <ul>
-                    {% for a in issue.activities %}
-                        <li>
-                            <small>{{ a.created_at if a.created_at else ""}}</small>
-                            &nbsp;<strong>{{a.action}}</strong>
-                            {%if a.user%} by {{a.user.username}}{% endif %}:
-                            {% if a.detail %} {{ a.detail }} {% else %}<em>No details</em>{% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No activity yet.</p>
-            {% endif %}
+    <h4>Add Comment</h4>
+    <form method="POST" action="{{ url_for('main.issue_detail', issue_id=issue.id) }}">
+        <textarea name="content" rows="4" placeholder="Write your comment..." required></textarea>
+        <button type="submit">Add Comment</button>
+    </form>
 
+    {% if current_user.is_authenticated and
+        (current_user.id == issue.reporter_id or 
+         (issue.assignee_id and current_user.id == issue.assignee_id) or 
+         current_user.id == issue.project.owner_id) %}
+        <p><a href="{{ url_for('main.issue_edit', issue_id=issue.id) }}">Edit Issue</a></p>
+    {% endif %}
 
-        <h4>Add Comments</h4>
-        <form method="POST"  action="{{url_for('main.issue_detail', issue_id=issue.id)}}">
-            <textarea name="content" rows=4></textarea><br>
-            <button type="submit">Add Comment</button>
-        </form>
-
-        {% if current_user.is_authenticated and
-            (current_user.id == issue.reporter_id or (issue.assignee_id and current_user.id == issue.assignee_id) or current_user.id == issue.project.owner_id) %}
-            <p><a href="{{url_for('main.issue_edit',issue_id=issue.id)}}">Edit Issue</a></p>
-        {% endif %}
-
-         <p><a href="{{ url_for('main.project_issues', project_id=issue.project.id) }}">Back to issues</a></p>
+    <p><a href="{{ url_for('main.project_issues', project_id=issue.project.id) }}">Back to issues</a></p>
 {% endblock %}

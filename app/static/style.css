@@ -1,0 +1,349 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #2c3e50;
+    background-color: #f8f9fa;
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Typography */
+h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #1a1a1a;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1a1a1a;
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem;
+    color: #2c3e50;
+}
+
+h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.75rem;
+    color: #2c3e50;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+/* Links */
+a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #2980b9;
+}
+
+/* Flash Messages */
+ul:first-child {
+    margin-bottom: 2rem;
+}
+
+ul:first-child li {
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border-left: 4px solid;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Forms */
+form {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+}
+
+form p {
+    margin-bottom: 1.25rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.95rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #ced4da;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    background-color: #fafbfc;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #3498db;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.5;
+}
+
+select {
+    cursor: pointer;
+}
+
+/* Buttons */
+button,
+button[type="submit"] {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Lists */
+ul {
+    list-style: none;
+    margin: 1.5rem 0;
+}
+
+ul li {
+    background: white;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+ul li:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: #dee2e6;
+}
+
+ul li strong {
+    color: #2c3e50;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+ul li small {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+ul li br {
+    display: block;
+    margin: 0.5rem 0;
+    content: "";
+}
+
+/* Navigation/Action Links at top of pages */
+body > p,
+h1 + p,
+h2 + p {
+    margin-bottom: 2rem;
+}
+
+p a {
+    display: inline-block;
+    margin-right: 0.75rem;
+    margin-bottom: 0.5rem;
+    padding: 10px 18px;
+    background-color: white;
+    border: 1.5px solid #dee2e6;
+    border-radius: 6px;
+    color: #495057;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+p a:hover {
+    background-color: #3498db;
+    border-color: #3498db;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+/* Horizontal Rule */
+hr {
+    border: none;
+    border-top: 2px solid #e9ecef;
+    margin: 2.5rem 0;
+}
+
+/* Filter Form (GET forms) */
+form[method="GET"] {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+form[method="GET"] input[type="text"],
+form[method="GET"] select {
+    flex: 1;
+    min-width: 160px;
+    background-color: white;
+}
+
+form[method="GET"] button {
+    white-space: nowrap;
+    padding: 12px 20px;
+}
+
+form[method="GET"] a {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #6c757d;
+    color: white;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+form[method="GET"] a:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* Pagination */
+body > div:last-of-type,
+ul + div {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 1.25rem;
+    background: white;
+    border-radius: 8px;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Comments & Activity Sections */
+h3 + ul {
+    background: #fafbfc;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+h3 + ul li {
+    background: white;
+    border-left: 3px solid #3498db;
+}
+
+/* Back to links at bottom */
+body > p:last-of-type a,
+form + p a {
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+body > p:last-of-type a:hover,
+form + p a:hover {
+    background-color: #e9ecef;
+    color: #495057;
+    border-color: #adb5bd;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 20px 15px;
+    }
+
+    form {
+        padding: 1.5rem;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h2 {
+        font-size: 1.35rem;
+    }
+
+    form[method="GET"] {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    form[method="GET"] input[type="text"],
+    form[method="GET"] select,
+    form[method="GET"] button,
+    form[method="GET"] a {
+        width: 100%;
+    }
+
+    ul li {
+        padding: 1rem;
+    }
+}
+
+/* Empty State Messages */
+p:only-child {
+    text-align: center;
+    color: #6c757d;
+    padding: 3rem 2rem;
+    background: white;
+    border-radius: 8px;
+    border: 2px dashed #dee2e6;
+}
