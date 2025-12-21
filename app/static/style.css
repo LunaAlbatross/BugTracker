@@ -1,31 +1,20 @@
-/* =================================================================
-   CAPPUCCINO MATTE - Creamy & Rich
-   Focus: Milky White surfaces with Espresso accents
-   ================================================================= */
-
 :root {
-    /* The Palette */
-    --milk-foam: #F9F4F0;       /* Milky White */
-    --cappuccino-light: #EAE0D5; /* Creamy transition */
-    --coffee-medium: #827366;    /* Muted coffee brown */
-    --espresso: #4B3832;         /* Deep espresso brown */
+    --milk-foam: #F9F4F0;       
+    --cappuccino-light: #EAE0D5; 
+    --coffee-medium: #827366;    
+    --espresso: #4B3832;         
     
-    /* Semantic Matte Colors */
-    --matcha: #84a59d;           /* Muted green for success */
-    --berry: #9d8189;            /* Muted red for danger */
-    --chai: #d4a373;             /* Muted orange for warning */
+    
+    --matcha: #84a59d;           
+    --berry: #9d8189;            
+    --chai: #d4a373;             
 
-    /* Typography & Depth */
-    --text-main: #4B3832;        /* Espresso text */
-    --text-muted: #827366;       /* Lighter coffee text */
-    --border: #D5C7BC;           /* Soft latte border */
+    --text-main: #4B3832;        
+    --text-muted: #827366;       
+    --border: #D5C7BC;           
     --radius: 12px;
     --shadow-soft: 0 4px 20px rgba(75, 56, 50, 0.08);
 }
-
-/* =================================================================
-   BASE STYLES
-   ================================================================= */
 
 * {
     margin: 0;
@@ -45,10 +34,6 @@ body > * {
     max-width: 900px;
     margin: 0 auto;
 }
-
-/* =================================================================
-   TYPOGRAPHY
-   ================================================================= */
 
 h1, h2, h3 {
     color: var(--espresso);
@@ -71,10 +56,6 @@ a:hover {
     color: var(--espresso);
 }
 
-/* =================================================================
-   MILKY CONTAINERS (Forms & Lists)
-   ================================================================= */
-
 form, ul {
     background: var(--milk-foam);
     border: 1px solid var(--border);
@@ -85,7 +66,6 @@ form, ul {
     list-style: none;
 }
 
-/* Inset inputs for a matte feel */
 input, textarea, select {
     width: 100%;
     background: #FFFFFF;
@@ -112,9 +92,7 @@ label {
     font-size: 0.9rem;
 }
 
-/* =================================================================
-   BUTTONS
-   ================================================================= */
+
 
 button, button[type="submit"] {
     background: var(--espresso);
@@ -122,7 +100,7 @@ button, button[type="submit"] {
     border: none;
     padding: 12px 28px;
     font-weight: 600;
-    border-radius: 30px; /* Pill shape for a modern feel */
+    border-radius: 30px;
     cursor: pointer;
     transition: transform 0.2s ease, background 0.2s ease;
 }
@@ -132,7 +110,6 @@ button:hover {
     transform: translateY(-2px);
 }
 
-/* Back links and secondary nav */
 p a {
     display: inline-block;
     padding: 8px 20px;
@@ -141,10 +118,6 @@ p a {
     border-radius: 20px;
     font-size: 0.9rem;
 }
-
-/* =================================================================
-   STATUS BADGES
-   ================================================================= */
 
 .badge {
     padding: 4px 12px;
@@ -159,10 +132,6 @@ p a {
 .badge-closed { background: var(--coffee-medium); color: white; }
 .badge-high { background: var(--berry); color: white; }
 .badge-medium { background: var(--chai); color: white; }
-
-/* =================================================================
-   LIST ITEMS & ACTIVITY
-   ================================================================= */
 
 ul li {
     padding: 20px;
@@ -180,9 +149,6 @@ ul li strong {
     color: var(--espresso);
 }
 
-/* =================================================================
-   FLASH MESSAGES
-   ================================================================= */
 
 .flash p {
     background: var(--milk-foam);
